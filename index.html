@@ -135,8 +135,57 @@ const diccionario = {
 
 // Nueva palabra para agregar
 const nuevasPalabras = {
-  "mamaguebo": "maguvo"
+  "mamaguebo": "maguvo",
+  "loco": "loku",
+  "guapo": "viro"
 };
+// Verbo "ser" con sus conjugaciones y traducciones personalizadas
+const verboSer = {
+  "soy": "na esa",
+  "eres": "na ese",
+  "es": "na ese",
+  "somos": "na esamos",
+  "son": "na eson",
+  
+  "fui": "na ese",
+  "fuiste": "na esiste",
+  "fue": "na esió",
+  "fuimos": "na esimos",
+  "fueron": "na esieron",
+  
+  "seré": "na esu",
+  "serás": "na esás",
+  "será": "na esá",
+  "seremos": "na esemos",
+  "serán": "na esán"
+};
+// Conjugaciones del verbo estar
+const verboEstar = {
+  "yo estoy": "na esta",
+  "tú estás": "nu esta",
+  "él está": "ne esta",
+  "ella está": "ne esta",
+  "nosotros estamos": "ni esta",
+  "vosotros estáis": "no esta",
+  "ellos están": "na esta",
+  "yo estuve": "na este",
+  "tú estuviste": "nu este",
+  "él estuvo": "ne este",
+  "ella estuvo": "ne este",
+  "nosotros estuvimos": "ni este",
+  "vosotros estuvisteis": "no este",
+  "ellos estuvieron": "na este",
+  "yo estaré": "na estu",
+  "tú estarás": "nu estu",
+  "él estará": "ne estu",
+  "ella estará": "ne estu",
+  "nosotros estaremos": "ni estu",
+  "vosotros estaréis": "no estu",
+  "ellos estarán": "na estu"
+};  
+
+// Mezclar con las palabras existentes
+Object.assign(nuevasPalabras, verboSer);  
 
 // Agregar la nueva palabra al diccionario original
 Object.assign(diccionario, nuevasPalabras);
