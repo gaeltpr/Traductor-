@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Traductor Idioma Secreto ↔ Español</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 700px; margin: 20px auto; }
+  textarea, select, input { width: 100%; padding: 8px; margin: 6px 0; box-sizing: border-box; }
+  button { padding: 10px 15px; margin-top: 10px; cursor: pointer; }
+  #resultado { background: #eee; padding: 10px; min-height: 40px; white-space: pre-wrap; }
+  .section { margin-bottom: 30px; }
+</style>
+</head>
+<body>
+
+<h1>Traductor Idioma Secreto ↔ Español</h1>
+
+<div class="section">
+  <label for="direccion">Dirección de traducción:</label>
+  <select id="direccion">
+    <option value="secreto-es">Idioma Secreto → Español</option>
+    <option value="es-secreto">Español → Idioma Secreto</option>
+  </select>
+</div>
+
+<div class="section">
+  <label for="inputFrase">Escribe la frase:</label>
+  <textarea id="inputFrase" rows="3" placeholder="Ejemplo: na beva nai"></textarea>
+  <button onclick="traducir()">Traducir</button>
+  <div id="resultado"></div>
+</div>
+
+<script>
+// Diccionarios básicos (todo en minúsculas)
+const diccionario = {
+  "hola": "hala",
+  "adios": "baiya",
+  "amor": "lavi",
+  "amistad": "pelia",
+  "feliz": "mira",
+  "triste": "soro",
+  "enojado": "fira",
+  "cansado": "lomu",
+  "bien": "zeno",
+  "mal": "doro",
+  "mucho": "muni",
+  "poco": "minu",
+  "aqui": "aka",
+  "alli": "ala",
+  "hoy": "suno",
+  "mañana": "manu",
+  "ayer": "year",
+  "siempre": "sempa",
+  "nunca": "nuka",
+  "ahora": "nawa",
+  "gracias": "dron",
+  "por favor": "plisa",
+  "lesbiana": "leska",
+  "gay": "gali",
+
+  // Conectores
+  "si": "da",
+  "no": "ne",
+  "y": "ka",
+  "pero": "su",
+  "porque": "preho",
+  "qué": "ke",
+  "quién": "ku",
+  "dónde": "do",
+  "cuando": "wen",
+  "cómo": "kom",
+
+  // Sustantivos
+  "agua": "nai",
+  "comida": "fuk",
+  "casa": "dom",
+  "amigo": "pel",
+  "día": "sun",
+  "noche": "luny",
+  "calle": "stri",
+  "dinero": "mon",
+  "trabajo": "lob",
+  "escuela": "skol",
+  "tiempo": "ten",
+  "mano": "han",
+  "cosa": "tok",
+  "ciudad": "cit",
+  "auto": "kar",
+  "sol": "soly",
+  "luna": "luna",
+  "mar": "mer",
+  "montaña": "mona",
+  "árbol": "tre",
+
+  // Pronombres
+  "yo": "na",
+  "tu": "te",
+  "tú": "te",
+  "el": "lo",
+  "él": "lo",
+  "ella": "lo",
+  "nosotros": "ne",
+  "nosotras": "ne",
+  "ellos": "li",
+  "ellas": "li",
+
+  // Verbos base - sin conjugar
+  "comer": "vol",
+  "ir": "dad",
+  "ver": "fun",
+  "hablar": "ser",
+  "querer": "mar",
+  "tener": "zel",
+  "hacer": "kip",
+  "saber": "ton",
+  "pensar": "mir",
+  "dormir": "sul",
+  "beber": "bev",
+  "vivir": "len",
+  "correr": "ras",
+  "esperar": "wai",
+  "traer": "bor"
+};
+
+// Nuevas palabras
+const nuevasPalabras = {
+  "mamaguebo": "maguvo",
+  "loco": "loku",
+  "guapo": "viro"
+};
+
+// Verbo SER (es)
+const verboSer = {
+  "yo soy": "na esa",
+  "tú eres": "te ese",
+  "él es": "lo ese",
+  "ella es": "lo ese",
+  "nosotros somos": "ne esa",
+  "ustedes son": "se esen",
+  "ellos son": "li esen",
+  "yo fui": "na ese",
+  "tú fuiste": "te ese",
+  "él fue": "lo ese",
+  "ella fue": "lo ese",
+  "nosotros fuimos": "ne ese",
+  "ustedes fueron": "se esen",
+  "ellos fueron": "li esen",
+  "yo seré": "na esu",
+  "tú serás": "te esu",
+  "él será": "lo esu",
+  "ella será": "lo esu",
+  "nosotros seremos": "ne esu",
+  "ustedes serán": "se esun",
+  "ellos serán": "li esun"
+};
+
+// Verbo ESTAR (est)
+const verboEstar = {
+  "yo estoy": "na esta",
+  "tú estás": "te esta",
+  "él está": "lo esta",
+  "ella está": "lo esta",
+  "nosotros estamos": "ne estan",
+  "ustedes están": "se estan",
+  "ellos están": "li estan",
+  "yo estuve": "na este",
+  "tú estuviste": "te este",
+  "él estuvo": "lo este",
+  "ella estuvo": "lo este",
+  "nosotros estuvimos": "ne este",
+  "ustedes estuvieron": "se esten",
+  "ellos estuvieron": "li esten",
+  "yo estaré": "na estu",
+  "tú estarás": "te estu",
+  "él estará": "lo estu",
+  "ella estará": "lo estu",
+  "nosotros estaremos": "ne estu",
+  "ustedes estarán": "se estun",
+  "ellos estarán": "li estun"
+};
+
+// Mezclar todas las nuevas palabras y verbos con el diccionario
+Object.assign(diccionario, nuevasPalabras);
+Object.assign(diccionario, verboSer);
+Object.assign(diccionario, verboEstar);
+
+// Crear diccionario inverso para traducir de idioma secreto a español
+const diccionarioInverso = {};
+for (const [esp, sec] of Object.entries(diccionario)) {
+  diccionarioInverso[sec] = esp;
+}
+
+// Sufijos de conjugación verbo (idioma secreto)
+const sufijos = {
+  "a": "presente",
+  "e": "pasado",
+  "u": "futuro"
+};
+
+// Map pronombre español → idioma secreto (normalizado)
+const pronombresMap = {
+  "yo": "na",
+  "tu": "te",
+  "tú": "te",
+  "el": "lo",
+  "él": "lo",
+  "ella": "lo",
+  "nosotros": "ne",
+  "nosotras": "ne",
+  "ellos": "li",
+  "ellas": "li"
+};
+
+// Función para detectar verbo conjugado español y obtener verbo base y tiempo (simplificado)
+const conjugacionesEsp = {
+  "comer": [["como", "presente"], ["comes", "presente"], ["come", "presente"], ["comí", "pasado"], ["comiste", "pasado"], ["comió", "pasado"], ["comeré", "futuro"]],
+  "beber": [["bebo", "presente"], ["bebes", "presente"], ["bebe", "presente"], ["bebí", "pasado"], ["bebiste", "pasado"], ["bebió", "pasado"], ["beberé", "futuro"]],
+  "ir": [["voy", "presente"], ["vas", "presente"], ["va", "presente"], ["fui", "pasado"], ["fuiste", "pasado"], ["fue", "pasado"], ["iré", "futuro"]],
+  "querer": [["quiero", "presente"], ["quieres", "presente"], ["quiere", "presente"], ["quise", "pasado"], ["quisiste", "pasado"], ["quiso", "pasado"], ["querré", "futuro"]],
+  "hablar": [["hablo", "presente"], ["hablas", "presente"], ["habla", "presente"], ["hablé", "pasado"], ["hablaste", "pasado"], ["habló", "pasado"], ["hablaré", "futuro"]],
+  // Añade más si quieres
+};
+
+// Convierte verbo conjugado en español a {base, tiempo}
+function detectarVerboConjugado(palabra) {
+  palabra = palabra.toLowerCase();
+  for (const [base, lista] of Object.entries(conjugacionesEsp)) {
+    for (const [conj, tiempo] of lista) {
+      if (palabra === conj) return { base, tiempo };
+    }
+  }
+  if (diccionario[palabra]) {
+    // verbo base en presente si está en diccionario
+    return { base: palabra, tiempo: "presente" };
+  }
+  return null;
+}
+
+// Traduce de español a idioma secreto
+function traducirEspanolSecreto(texto) {
+  const palabras = texto.toLowerCase().split(/\s+/);
+  let resultado = [];
+  for (let i = 0; i < palabras.length; i++) {
+    let p = palabras[i];
+
+    // Pronombres en español
+    if (pronombresMap[p]) {
+      resultado.push(pronombresMap[p]);
+      continue;
+    }
+
+    // Verbo conjugado
+    const verboDetectado = detectarVerboConjugado(p);
+    if (verboDetectado) {
+      const verboSec = diccionario[verboDetectado.base];
+      const sufijo = Object.keys(sufijos).find(s => sufijos[s] === verboDetectado.tiempo) || "a";
+      resultado.push(verboSec + sufijo);
+      continue;
+    }
+
+    // Palabra normal
+    if (diccionario[p]) {
+      resultado.push(diccionario[p]);
+      continue;
+    }
+
+    // No encontrado
+    resultado.push(`[${p}]`);
+  }
+  return resultado.join(" ");
+}
+
+// Traduce de idioma secreto a español
+function traducirSecretoEspanol(texto) {
+  const palabras = texto.toLowerCase().split(/\s+/);
+  let resultado = [];
+  for (let i = 0; i < palabras.length; i++) {
+    const p = palabras[i];
+
+    // Pronombres exactos
+    if (["na","te","lo","ne","li"].includes(p)) {
+      if (p === "lo") {
+        resultado.push("el");
+      } else {
+        const pronEsp = {
+          "na": "yo",
+          "te": "tu",
+          "ne": "nosotros",
+          "li": "ellos"
+        };
+        resultado.push(pronEsp[p] || `[${p}]`);
+      }
+      continue;
+    }
+
+    // Verbos conjugados (terminan en a, e, u)
+    if (p.length > 2) {
+      const base = p.slice(0, -1);
+      const sufijo = p.slice(-1);
+      if (diccionarioInverso[base] && sufijos[sufijo]) {
+        const verboEsp = diccionarioInverso[base];
+        const tiempo = sufijos[sufijo];
+        resultado.push(verboEsp + ` (${tiempo})`);
+        continue;
+      }
+    }
+
+    // Palabra normal
+    if (diccionarioInverso[p]) {
+      resultado.push(diccionarioInverso[p]);
+      continue;
+    }
+
+    resultado.push(`[${p}]`);
+  }
+  return resultado.join(" ");
+}
+
+function traducir() {
+  const texto = document.getElementById("inputFrase").value.trim();
+  const direccion = document.getElementById("direccion").value;
+  if (!texto) {
+    document.getElementById("resultado").textContent = "";
+    return;
+  }
+
+  let resultado = "";
+  if (direccion === "es-secreto") {
+    resultado = traducirEspanolSecreto(texto);
+  } else {
+    resultado = traducirSecretoEspanol(texto);
+  }
+
+  document.getElementById("resultado").textContent = resultado;
+}
+</script>
+
+</body>
+</html>
