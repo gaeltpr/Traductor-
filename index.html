@@ -139,6 +139,7 @@ const nuevasPalabras = {
   "loco": "loku",
   "guapo": "viro"
 };
+  
 // Verbo "ser" con sus conjugaciones y traducciones personalizadas
 const verboSer = {
   "soy": "na esa",
@@ -159,6 +160,7 @@ const verboSer = {
   "seremos": "na esemos",
   "serán": "na esán"
 };
+  
 // Conjugaciones del verbo estar
 const verboEstar = {
   "yo estoy": "na esta",
@@ -185,7 +187,8 @@ const verboEstar = {
 };  
 
 // Mezclar con las palabras existentes
-Object.assign(nuevasPalabras, verboSer);  
+Object.assign(nuevasPalabras, verboSer);
+Object.assign(nuevasPalabras, verboEstar);
 
 // Agregar la nueva palabra al diccionario original
 Object.assign(diccionario, nuevasPalabras);
